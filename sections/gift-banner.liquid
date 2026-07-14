@@ -1,15 +1,36 @@
 {{ 'gift.css' | asset_url | stylesheet_tag }}
 <script src="{{ 'gift.js' | asset_url }}" defer></script>
 
+{% comment %}
+  <section class="gift-banner">
+  <h1> {{ section.settings.heading}}</h1>
+  <p> {{section.settings.description }} </p>
+  <a href=" {{ section.settings.button_link}}"  class="gift-banner__button" >
+    {{section.settings.button_text}}</a>
+  </section>
+{% endcomment %}
 
 <section class="gift-banner">
-<h1> {{ section.settings.heading}}</h1>
-<p> {{section.settings.description }} </p>
-<a href=" {{ section.settings.button_link}}"  class="gift-banner__button" >
-  {{section.settings.button_text}}</a>
+  {% if section.settings.background_image %}
+    <img
+      src="{{ section.settings.background_image | image_url: width: 2000 }}"
+      alt="Banner"
+      class="gift-banner__image"
+      width="{{ section.settings.background_image.width }}"
+      height="{{ section.settings.background_image.height }}"
+    >
+  {% endif %}
+
+  <div class="gift-banner__content">
+    <h1>{{ section.settings.heading }}</h1>
+
+    <p>{{ section.settings.description }}</p>
+
+    <a href="{{ section.settings.button_link }}" class="gift-banner__button">
+      {{ section.settings.button_text }}
+    </a>
+  </div>
 </section>
-
-
 
 {% schema %}
 {
