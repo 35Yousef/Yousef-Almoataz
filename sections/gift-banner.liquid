@@ -1,35 +1,43 @@
 {{ 'gift.css' | asset_url | stylesheet_tag }}
 <script src="{{ 'gift.js' | asset_url }}" defer></script>
 
-{% comment %}
-  <section class="gift-banner">
-  <h1> {{ section.settings.heading}}</h1>
-  <p> {{section.settings.description }} </p>
-  <a href=" {{ section.settings.button_link}}"  class="gift-banner__button" >
-    {{section.settings.button_text}}</a>
-  </section>
-{% endcomment %}
-
 <section class="gift-banner">
-  {% if section.settings.background_image %}
-    <img
-      src="{{ section.settings.background_image | image_url: width: 2000 }}"
-      alt="Banner"
-      class="gift-banner__image"
-      width="{{ section.settings.background_image.width }}"
-      height="{{ section.settings.background_image.height }}"
+
+  <div class="gift-banner__image">
+    {% if section.settings.banner_image %}
+      <img
+        src="{{ section.settings.banner_image | image_url: width: 2000 }}"
+        alt="{{ section.settings.heading }}"
+        loading="lazy"
+        width="{{ section.settings.banner_image.width }}"
+        height="{{ section.settings.banner_image.height }}"
+      >
+    {% endif %}
+  </div>
+
+  <div class="gift-banner__content page-width">
+
+    <h1 class="gift-banner__title">
+      {{ section.settings.heading }}
+    </h1>
+
+    <p class="gift-banner__description">
+      {{ section.settings.description }}
+    </p>
+
+    <a
+      href="{{ section.settings.button_link }}"
+      class="gift-banner__button"
     >
-  {% endif %}
-
-  <div class="gift-banner__content">
-    <h1>{{ section.settings.heading }}</h1>
-
-    <p>{{ section.settings.description }}</p>
-
-    <a href="{{ section.settings.button_link }}" class="gift-banner__button">
       {{ section.settings.button_text }}
     </a>
+
   </div>
+
+  <div class="gift-banner__footer">
+    {{ section.settings.footer_text }}
+  </div>
+
 </section>
 
 {% schema %}
@@ -38,8 +46,8 @@
   "settings": [
     {
       "type": "image_picker",
-      "id": "background_image",
-      "label": "Background Image"
+      "id": "banner_image",
+      "label": "Banner Image"
     },
     {
       "type": "text",
@@ -51,18 +59,24 @@
       "type": "textarea",
       "id": "description",
       "label": "Description",
-      "default": "Discover Joy: Your Ultimate Holiday Gift Destination."
+      "default": "Discover Joy: Your Ultimate Holiday Gift Destination. Explore our curated selection and find the perfect gifts to delight your loved ones this holiday season."
     },
     {
       "type": "text",
       "id": "button_text",
       "label": "Button Text",
-      "default": "Shop Now"
+      "default": "SHOP NOW"
     },
     {
       "type": "url",
       "id": "button_link",
       "label": "Button Link"
+    },
+    {
+      "type": "text",
+      "id": "footer_text",
+      "label": "Footer Text",
+      "default": "SUSTAINABLE, ETHICALLY MADE CLOTHES IN SIZES XXS TO 6XL"
     }
   ],
   "presets": [

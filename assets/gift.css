@@ -1,0 +1,90 @@
+.gift-banner {
+    width: 100%;
+}
+
+.gift-banner__image img {
+    width: 100%;
+    display: block;
+}
+
+.gift-banner__content {
+    max-width: 1440px;
+    margin: 0 auto;
+    padding: 70px 50px;
+}
+
+.gift-banner__title {
+    font-size: 72px;
+    line-height: 1;
+    font-weight: 600;
+    color: #000;
+    margin-bottom: 35px;
+}
+
+.gift-banner__description {
+    max-width: 560px;
+    font-size: 24px;
+    line-height: 1.6;
+    color: #000;
+    margin-bottom: 45px;
+}
+
+.gift-banner__button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 220px;
+    height: 60px;
+    background: #000;
+    color: #fff;
+    text-decoration: none;
+    text-transform: uppercase;
+    font-size: 16px;
+    font-weight: 500;
+    transition: .3s;
+}
+
+.gift-banner__button:hover {
+    background: #222;
+}
+
+.gift-banner__footer {
+    background: #f3f3f3;
+    text-align: center;
+    padding: 18px;
+    font-size: 18px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+}
+
+/* ------------------------- */
+/* Mobile */
+/* ------------------------- */
+
+@media screen and (max-width:768px) {
+
+    .gift-banner__content {
+        padding: 40px 20px;
+        text-align: center;
+    }
+
+    .gift-banner__title {
+        font-size: 52px;
+    }
+
+    .gift-banner__description {
+        max-width: 100%;
+        font-size: 20px;
+    }
+
+    .gift-banner__button {
+        width: 200px;
+        height: 56px;
+    }
+
+    .gift-banner__footer {
+        font-size: 15px;
+        padding: 14px;
+    }
+
+}
