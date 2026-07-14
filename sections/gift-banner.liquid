@@ -1,0 +1,19 @@
+{{ 'gift.css' | asset_url | stylesheet_tag }}
+<script src="{{ 'gift.js' | asset_url }}" defer></script>
+
+
+<section class="gift-banner">
+
+</section>
+
+{% schema %}
+{
+  "name": "Gift Banner",
+  "settings": [],
+  "presets": [
+    {
+      "name": "Gift Banner"
+    }
+  ]
+}
+{% endschema %}
