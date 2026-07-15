@@ -1,18 +1,26 @@
 {{ 'gift-grid.css' | asset_url | stylesheet_tag }}
 <script src="{{ 'gift-grid.js' | asset_url }}" defer></script>
+<script src="{{ 'product-form.js' | asset_url }}" defer="defer"></script>
 
 <section class="gift-grid page-width">
   {% for block in section.blocks %}
     {% assign product = block.settings.product %}
 
     {% if product %}
+      {%- assign product_form_id = 'product-form-' | append: section.id | append: '-' | append: product.id -%}
       <div class="gift-card" {{ block.shopify_attributes }}>
         <div class="gift-card__image">
-          <img
-            src="{{ product.featured_image | image_url: width: 800 }}"
-            alt="{{ product.title }}"
-            loading="lazy"
-          >
+          {% if product.featured_image != blank %}
+            <img
+              src="{{ product.featured_image | image_url: width: 800 }}"
+              alt="{{ product.title | escape }}"
+              loading="lazy"
+              width="{{ product.featured_image.width }}"
+              height="{{ product.featured_image.height }}"
+            >
+          {% else %}
+            {{ 'product-1' | placeholder_svg_tag: 'placeholder-svg' }}
+          {% endif %}
 
           <button
             type="button"
@@ -28,48 +36,114 @@
 
           <div class="gift-popup__content">
             <div class="gift-popup__image">
-              <img
-                src="{{ product.featured_image | image_url: width: 800 }}"
-                alt="{{ product.title }}"
-              >
+              {% if product.featured_image != blank %}
+                <img
+                  src="{{ product.featured_image | image_url: width: 800 }}"
+                  alt="{{ product.title | escape }}"
+                  loading="lazy"
+                  width="{{ product.featured_image.width }}"
+                  height="{{ product.featured_image.height }}"
+                >
+              {% else %}
+                {{ 'product-1' | placeholder_svg_tag: 'placeholder-svg' }}
+              {% endif %}
             </div>
 
             <div class="gift-popup__info">
               <h2>{{ product.title }}</h2>
 
               <p class="gift-popup__price">
-                {{ product.price | money }}
+                {{ product.selected_or_first_available_variant.price | money }}
               </p>
 
               <div class="gift-popup__description">
                 {{ product.description }}
               </div>
 
-              {% unless product.has_only_default_variant %}
-                {% for option in product.options_with_values %}
-                  <div class="gift-popup__option">
-                    <label>{{ option.name }}</label>
+              <product-form>
+                {%- form 'product',
+                  product,
+                  id: product_form_id,
+                  class: 'form',
+                  novalidate: 'novalidate',
+                  data-type: 'add-to-cart-form'
+                -%}
+                  <input
+                    type="hidden"
+                    name="id"
+                    value="{{ product.selected_or_first_available_variant.id }}"
+                    class="product-variant-id"
+                  >
 
-                    <select
-                      class="gift-option"
-                      data-option-position="{{ option.position }}"
-                    >
-                      {% for value in option.values %}
-                        <option value="{{ value }}">
-                          {{ value }}
-                        </option>
+                  <script type="application/json" class="product-variants-json">
+                    [
+                      {%- for variant in product.variants -%}
+                        {
+                          "id": {{ variant.id }},
+                          "available": {{ variant.available }},
+                          "price": "{{ variant.price | money }}",
+                          "options": {{ variant.options | json }}
+                        }{%- unless forloop.last -%},{%- endunless -%}
+                      {%- endfor -%}
+                    ]
+                  </script>
+
+                  {% unless product.has_only_default_variant %}
+                    <div class="gift-popup__options">
+                      {% for option in product.options_with_values %}
+                        <div class="gift-popup__option">
+                          <label>{{ option.name }}</label>
+
+                          <select
+                            class="gift-option"
+                            data-option-position="{{ option.position }}"
+                          >
+                            {% for value in option.values %}
+                              <option
+                                value="{{ value | escape }}"
+                                {% if option.selected_value == value %}
+                                  selected="selected"
+                                {% endif %}
+                              >
+                                {{ value }}
+                              </option>
+                            {% endfor %}
+                          </select>
+                        </div>
                       {% endfor %}
-                    </select>
-                  </div>
-                {% endfor %}
-              {% endunless %}
+                    </div>
+                  {% endunless %}
 
-              <button
-                class="gift-popup__add"
-                data-product-id="{{ product.id }}"
-              >
-                Add to Cart
-              </button>
+                  <button
+                    id="{{ product_form_id }}-submit"
+                    type="submit"
+                    name="add"
+                    class="gift-popup__add"
+                    {% unless product.selected_or_first_available_variant.available %}
+                      disabled
+                    {% endunless %}
+                  >
+                    <span>
+                      {%- if product.selected_or_first_available_variant.available -%}
+                        Add to Cart
+                      {%- else -%}
+                        Sold Out
+                      {%- endif -%}
+                    </span>
+                    <div class="loading__spinner hidden">
+                      <svg
+                        aria-hidden="true"
+                        focusable="false"
+                        class="spinner"
+                        viewBox="0 0 66 66"
+                        xmlns="http://www.w3.org/2000/svg"
+                      >
+                        <circle class="path" fill="none" stroke-width="6" cx="33" cy="33" r="30"></circle>
+                      </svg>
+                    </div>
+                  </button>
+                {%- endform -%}
+              </product-form>
             </div>
           </div>
         </div>
