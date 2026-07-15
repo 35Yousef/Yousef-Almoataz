@@ -1,0 +1,104 @@
+{{ 'gift-grid.css' | asset_url | stylesheet_tag }}
+<script src="{{ 'gift-grid.js' | asset_url }}" defer></script>
+
+<section class="gift-grid page-width">
+  {% for block in section.blocks %}
+    {% assign product = block.settings.product %}
+
+    {% if product %}
+      <div class="gift-card" {{ block.shopify_attributes }}>
+        <div class="gift-card__image">
+          <img
+            src="{{ product.featured_image | image_url: width: 800 }}"
+            alt="{{ product.title }}"
+            loading="lazy"
+          >
+
+          <button
+            type="button"
+            class="gift-card__plus"
+          >
+            +
+          </button>
+        </div>
+
+        <!-- Hidden Popup -->
+        <div class="gift-popup">
+          <button class="gift-popup__close" type="button">×</button>
+
+          <div class="gift-popup__content">
+            <div class="gift-popup__image">
+              <img
+                src="{{ product.featured_image | image_url: width: 800 }}"
+                alt="{{ product.title }}"
+              >
+            </div>
+
+            <div class="gift-popup__info">
+              <h2>{{ product.title }}</h2>
+
+              <p class="gift-popup__price">
+                {{ product.price | money }}
+              </p>
+
+              <div class="gift-popup__description">
+                {{ product.description }}
+              </div>
+
+              {% unless product.has_only_default_variant %}
+                {% for option in product.options_with_values %}
+                  <div class="gift-popup__option">
+                    <label>{{ option.name }}</label>
+
+                    <select
+                      class="gift-option"
+                      data-option-position="{{ option.position }}"
+                    >
+                      {% for value in option.values %}
+                        <option value="{{ value }}">
+                          {{ value }}
+                        </option>
+                      {% endfor %}
+                    </select>
+                  </div>
+                {% endfor %}
+              {% endunless %}
+
+              <button
+                class="gift-popup__add"
+                data-product-id="{{ product.id }}"
+              >
+                Add to Cart
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    {% endif %}
+  {% endfor %}
+</section>
+
+{% schema %}
+{
+  "name": "Gift Grid",
+  "max_blocks": 6,
+  "blocks": [
+    {
+      "type": "product",
+      "name": "Product",
+      "settings": [
+        {
+          "type": "product",
+          "id": "product",
+          "label": "Select Product"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Gift Grid"
+    }
+  ]
+}
+{% endschema %}
